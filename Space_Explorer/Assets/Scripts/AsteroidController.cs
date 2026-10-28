@@ -30,8 +30,8 @@ public class AsteroidController : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Player"))
         {
-            FindAnyObjectByType<GameManager>().GameOver();
-            Destroy(other.gameObject);
+            FindAnyObjectByType<ScoreManager>().DeductScore(20);
+            FindAnyObjectByType<GameManager>().TakeDamage();
             Destroy(gameObject);
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
         }

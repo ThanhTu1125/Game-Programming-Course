@@ -6,18 +6,20 @@ public class ScoreManager : MonoBehaviour
     public int score = 0;
     public TextMeshProUGUI scoreText;
 
-    private int nextThreshold = 300;
-
     public void AddScore(int pointsToAdd)
     {
         score += pointsToAdd;
         scoreText.text = "Score: " + score;
 
-        if (score >= nextThreshold)
-        {
-            nextThreshold += 300;
+        PlayerPrefs.SetInt("FinalScore", score);
+    }
 
-            FindAnyObjectByType<GameManager>().RotatePlayerRandomly();
-        }
+    public void DeductScore(int penalty)
+    {
+        score -= penalty;
+        if (score < 0) score = 0;
+        scoreText.text = "Score: " + score;
+
+        PlayerPrefs.SetInt("FinalScore", score);
     }
 }

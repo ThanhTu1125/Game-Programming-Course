@@ -17,19 +17,28 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0f;
+        float moveX = Input.GetAxis("Horizontal");
+        float moveY = Input.GetAxis("Vertical");
 
-        mousePosition.x = Mathf.Clamp(mousePosition.x, minX, maxX);
-        mousePosition.y = Mathf.Clamp(mousePosition.y, minY, maxY);
+        Vector3 movement = new Vector3(moveX, moveY, 0f) * speed * Time.deltaTime;
+        transform.position += movement;
 
-        transform.position = mousePosition;
+        float clampedX = Mathf.Clamp(transform.position.x, minX, maxX);
+        float clampedY = Mathf.Clamp(transform.position.y, minY, maxY);
+        transform.position = new Vector3(clampedX, clampedY, transform.position.z);
 
-        if (Time.time > nextFire)
+        if (Input.GetMouseButton(0))
         {
-            nextFire = Time.time + fireRate;
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 lookDir = mousePos - transform.position;
+            float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
 
-            Instantiate(laserPrefab, transform.position, transform.rotation);
+            if (Time.time > nextFire)
+            {
+                nextFire = Time.time + fireRate;
+                Instantiate(laserPrefab, transform.position, transform.rotation);
+            }
         }
     }
 
